@@ -40,6 +40,10 @@ export class CornerstoneDirective implements OnInit, AfterViewChecked {
   private StackScrollTool = cornerstoneTools.StackScrollTool;
   private StackScrollMouseWheelTool = cornerstoneTools.StackScrollMouseWheelTool;
   private RectangleScissorsTool = cornerstoneTools.RectangleScissorsTool;
+  private FreehandRoiTool = cornerstoneTools.FreehandRoiTool;
+
+
+
   
 
   public get windowingValue(): string {
@@ -125,6 +129,7 @@ export class CornerstoneDirective implements OnInit, AfterViewChecked {
     cornerstoneTools.addTool(this.StackScrollMouseWheelTool);
     // cornerstoneTools.addTool(this.HighlightTool);
     cornerstoneTools.addTool(this.RectangleScissorsTool)
+    cornerstoneTools.addTool(this.FreehandRoiTool)
 
 
 

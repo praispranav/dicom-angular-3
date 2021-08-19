@@ -282,6 +282,13 @@ export class DICOMViewerComponent implements OnInit {
       cornerstoneTools.setToolActiveForElement(this.element, 'Probe', { mouseButtonMask: 1 }, ['Mouse']);
     }
   }
+  public enableFreeHand() {
+    if (this.imageCount > 0) {
+      this.resetAllTools();
+      // cornerstoneTools.probe.activate(this.element, 1);
+      cornerstoneTools.setToolActiveForElement(this.element, 'FreehandRoi', { mouseButtonMask: 1 }, ['Mouse']);
+    }
+  }
 
   // activate Elliptical ROI
   public enableElliptical() {
