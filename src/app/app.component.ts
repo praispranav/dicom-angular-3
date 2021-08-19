@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DICOMViewerComponent } from 'dicomViewer';
+import { DICOMViewerComponent } from './dicom/dicom-viewer.component';
 
 declare const cornerstone;
 declare const cornerstoneWADOImageLoader;
