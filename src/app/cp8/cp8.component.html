@@ -1,0 +1,34 @@
+<div class="h-100 w-100">
+    <div
+      style="
+        display: flex;
+        margin-left: 120px;
+        align-items: center;
+        justify-content: space-between;
+      "
+    >
+      <!-- <div class="choose_file">
+        Choose Your DICOM Files
+        <input
+          class="hide_file"
+          type="file"
+          multiple
+          accept="application/dicom"
+          id="imagens"
+          title=""
+          (change)="loadDICOMImages($event.target.files)"
+        />
+      </div> -->
+    </div>
+  
+    <div style="display: flex; height: calc(100%); width: 100%">
+      <dicom-viewer
+        [activeFrame]="handleToolViewer()"
+        [enableViewerTools]="true"
+        [enablePlayTools]="true"
+        [maxImagesToLoad]="20"
+        style="height: 100%; width: 100%;"
+      ></dicom-viewer>
+    </div>
+  </div>
+  

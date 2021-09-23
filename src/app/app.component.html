@@ -1,20 +1,388 @@
-<div style="height:100%; width: 100%;">
-  <div style="display: flex; margin-left: 120px; align-items: center;">
-    <h1>
-      A demo DICOM Viewer, based on <a href="https://github.com/cornerstonejs">Cornerstone</a>
-    </h1>
-
-    <div class="choose_file">
-      Choose Your DICOM Files
-      <input class="hide_file" type="file" multiple accept="application/dicom" id="imagens" title="selecione arquivos de imagens"
-      (change)="loadDICOMImages($event.target.files)">
+<div style="background-color: black; height: 100vh; overflow: hidden">
+  <div
+    class="modal fade"
+    id="exampleModalToggle"
+    aria-hidden="true"
+    aria-labelledby="exampleModalToggleLabel"
+    tabindex="-1"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalToggleLabel">
+            Select Number Of Frame
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <button
+            class="btn"
+            type="button"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            (click)="frameChange(1)"
+          >
+            One Frame
+          </button>
+          <button
+            type="button"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            class="btn"
+            (click)="frameChange(2)"
+          >
+            Two Frame
+          </button>
+          <button
+            type="button"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            class="btn"
+            (click)="frameChange(4)"
+          >
+            Four Frame
+          </button>
+          <button
+            type="button"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            class="btn"
+            (click)="frameChange(8)"
+          >
+            Eight Frame
+          </button>
+        </div>
+      </div>
     </div>
-
-
-
   </div>
 
-  <div style="display: flex;height: calc(100% - 90px); width:100%;">
-    <dicom-viewer [enableViewerTools]="true" [enablePlayTools]="true" [maxImagesToLoad]="20" style="height:100%; width:100%; margin: 10px;"></dicom-viewer>
+  <div
+    class="modal fade"
+    id="moreTools"
+    aria-hidden="true"
+    aria-labelledby="exampleModalToggleLabel"
+    tabindex="-1"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalToggleLabel">
+            Select Tool
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <button
+            class="btn btn-primary btn-small m-3"
+            (click)="selectTool('Highlighter')"
+          >
+            Highlighter
+          </button>
+          <button
+            class="btn btn-primary btn-small m-3"
+            data-bs-dismiss="modal"
+            (click)="selectTool('Freehand')"
+          >
+            Freehand
+          </button>
+          <button
+            class="btn btn-primary btn-small m-3"
+            data-bs-dismiss="modal"
+            (click)="selectTool('NextImage')"
+          >
+            NextImage
+          </button>
+          <button
+            class="btn btn-primary btn-small m-3"
+            data-bs-dismiss="modal"
+            (click)="selectTool('Stop')"
+          >
+            Stop
+          </button>
+          <button
+            class="btn btn-primary btn-small m-3"
+            data-bs-dismiss="modal"
+            (click)="selectTool('Play')"
+          >
+            Play
+          </button>
+          <button
+          class="btn btn-primary btn-small m-3"
+          data-bs-dismiss="modal"
+            (click)="selectTool('Console')"
+          >
+          Console
+        </button>
+        <button
+          class="btn btn-primary btn-small m-3"
+          data-bs-dismiss="modal"
+          (click)="selectTool('ResetTools')"
+        >
+          ResetTools
+        </button>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+  <!-- <a class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalToggle" role="button">Open first modal</a> -->
+
+  <div
+    *ngIf="true"
+    class="d-flex px-1 py-3 justify-content-between"
+    style="border: 1px solid #90caf9"
+  >
+    <div class="d-flex">
+      <button class="btn btn-primary btn-small" (click)="selectTool('Pan')">
+        Pan
+      </button>
+      <button class="btn btn-primary btn-small" (click)="selectTool('Probe')">
+        Probe
+      </button>
+      <button class="btn btn-primary btn-small" (click)="selectTool('Window')">
+        Window
+      </button>
+      <button class="btn btn-primary btn-small" (click)="selectTool('Invert')">
+        Invert
+      </button>
+      <button class="btn btn-primary btn-small" (click)="selectTool('Zoom')">
+        Zoom
+      </button>
+      <button class="btn btn-primary btn-small" (click)="selectTool('Length')">
+        Length
+      </button>
+      <button class="btn btn-primary btn-small" (click)="selectTool('Angle')">
+        Angle
+      </button>
+      <button
+        class="btn btn-primary btn-small"
+        (click)="selectTool('Elliptical')"
+      >
+        Elliptical
+      </button>
+      <button
+        class="btn btn-primary btn-small"
+        (click)="selectTool('Rectangle')"
+      >
+        Rectangle
+      </button>
+      <button
+        class="btn btn-primary btn-small"
+        data-bs-toggle="modal"
+        href="#moreTools"
+        role="button"
+      >
+        More Tools
+      </button>
+      <!-- <button class="btn btn-primary btn-small mx-2" (click)="selectTool('Probe')">Probe</button> -->
+    </div>
+    <button
+      class="btn btn-primary btn-small mx-1"
+      data-bs-toggle="modal"
+      href="#exampleModalToggle"
+      role="button"
+    >
+      Layout
+    </button>
+    <div class="d-flex">
+      <div class="choose_file">
+        Choose Your Global Files
+        <input
+          class="btn btn-primary btn-small"
+          type="file"
+          multiple
+          accept="application/dicom"
+          id="imagens"
+          title=""
+          (change)="handleImageChange($event.target.files)"
+        />
+      </div>
+    </div>
+    <div class="d-flex">
+      <button class="btn btn-primary btn-small" (click)='handleHistoryVisibility()'>Show History</button>
+    </div>
+  </div>
+  
+    
+  <div class="d-flex"
+      style="background: black; color: #ffffff; height: 100vh; width:100%; overflow-y: scroll"
+    >
+      <div style="display: flex; width:100%; flex-wrap: wrap; height: 92%">
+        <div
+          *ngIf="activeFrame >= 1"
+          [ngStyle]="
+            arr[1]
+              ? { border: '2px solid #1565c0' }
+              : { border: '2px solid #90caf9' }
+          "
+          (mouseover)="selectFrame(1)"
+          class="w-25 h-50"
+          [ngClass]="frame1WidthHeight()"
+        >
+          <app-cp
+            [activeFrame]="findIndexFrame()"
+            [dicomImageParent]="dicomImageParent"
+            [parentData]="parentData"
+          ></app-cp>
+        </div>
+        <div
+          *ngIf="activeFrame >= 2"
+          [ngStyle]="
+            arr[2]
+              ? { border: '2px solid #1565c0' }
+              : { border: '2px solid #90caf9' }
+          "
+          (mouseover)="selectFrame(2)"
+          class="w-25 h-50"
+          [ngClass]="frame2WidthHeight()"
+        >
+          <app-cp2
+            [activeFrame]="findIndexFrame()"
+            [dicomImageParent]="dicomImageParent"
+            [parentData]="parentData"
+          ></app-cp2>
+        </div>
+        <div
+          *ngIf="activeFrame >= 3"
+          [ngStyle]="
+            arr[3]
+              ? { border: '2px solid #1565c0' }
+              : { border: '2px solid #90caf9' }
+          "
+          (mouseover)="selectFrame(3)"
+          class="w-25 h-50"
+          [ngClass]="frame34WidthHeight()"
+        >
+          <app-cp3
+            [activeFrame]="findIndexFrame()"
+            [dicomImageParent]="dicomImageParent"
+            [parentData]="parentData"
+          ></app-cp3>
+        </div>
+        <div
+          *ngIf="activeFrame >= 4"
+          [ngStyle]="
+            arr[4]
+              ? { border: '2px solid #1565c0' }
+              : { border: '2px solid #90caf9' }
+          "
+          (mouseover)="selectFrame(4)"
+          class="w-25 h-50"
+          [ngClass]="frame34WidthHeight()"
+        >
+          <app-cp4
+            [activeFrame]="findIndexFrame()"
+            [dicomImageParent]="dicomImageParent"
+            [parentData]="parentData"
+          ></app-cp4>
+        </div>
+        <div
+          *ngIf="activeFrame >= 5"
+          [ngStyle]="
+            arr[5]
+              ? { border: '2px solid #1565c0' }
+              : { border: '2px solid #90caf9' }
+          "
+          (mouseover)="selectFrame(5)"
+          class="w-25 h-50"
+          [ngClass]="frame8WidthHeight()"
+        >
+          <app-cp5
+            [activeFrame]="findIndexFrame()"
+            [dicomImageParent]="dicomImageParent"
+            [parentData]="parentData"
+          ></app-cp5>
+        </div>
+        <div
+          *ngIf="activeFrame >= 6"
+          [ngStyle]="
+            arr[6]
+              ? { border: '2px solid #1565c0' }
+              : { border: '2px solid #90caf9' }
+          "
+          (mouseover)="selectFrame(6)"
+          class="w-25 h-50"
+          [ngClass]="frame8WidthHeight()"
+        >
+          <app-cp6
+            [activeFrame]="findIndexFrame()"
+            [dicomImageParent]="dicomImageParent"
+            [parentData]="parentData"
+          ></app-cp6>
+        </div>
+        <div
+          *ngIf="activeFrame >= 7"
+          [ngStyle]="
+            arr[7]
+              ? { border: '2px solid #1565c0' }
+              : { border: '2px solid #90caf9' }
+          "
+          (mouseover)="selectFrame(7)"
+          class="w-25 h-50"
+          [ngClass]="frame8WidthHeight()"
+        >
+          <app-cp7
+            [activeFrame]="findIndexFrame()"
+            [dicomImageParent]="dicomImageParent"
+            [parentData]="parentData"
+          ></app-cp7>
+        </div>
+        <div
+          *ngIf="activeFrame >= 8"
+          [ngStyle]="
+            arr[8]
+              ? { border: '2px solid #1565c0' }
+              : { border: '2px solid #90caf9' }
+          "
+          (mouseover)="selectFrame(8)"
+          class="w-25 h-50"
+          [ngClass]="frame8WidthHeight()"
+        >
+          <app-cp8
+            [activeFrame]="findIndexFrame()"
+            [dicomImageParent]="dicomImageParent"
+            [parentData]="parentData"
+          ></app-cp8>
+        </div>
+      </div>
+      <div *ngIf="historyVisibility" style="width: 20vw; height: 100%;background: rgb(90,50,50)">
+        <div class="my-2">
+          <b style="color: white;">Frame 1 History</b>
+          <br />
+          <div class="my-1">
+            <p>Probe</p>
+            <!-- <ol *ngIf="getFrameProbe('child')">
+              <li  *ngFor="let item of getFrameProbe()">
+                {{ item | json }}
+              </li>
+            </ol> -->
+          </div>
+
+        </div>
+
+        <b style="color: white;">Frame 2 History</b>
+        <br />
+        <b style="color: white;">Frame 3 History</b>
+        <br />
+        <b style="color: white;">Frame 4 History</b>
+        <br />
+        <b style="color: white;">Frame 5 History</b>
+        <br />
+        <b style="color: white;">Frame 6 History</b>
+        <br />
+        
+        <b style="color: white;">Frame 7 History</b>
+        <br />
+        <b style="color: white;">Frame 8 History</b>
+      </div>
+    </div>
+ 

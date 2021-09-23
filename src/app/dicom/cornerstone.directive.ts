@@ -42,10 +42,6 @@ export class CornerstoneDirective implements OnInit, AfterViewChecked {
   private RectangleScissorsTool = cornerstoneTools.RectangleScissorsTool;
   private FreehandRoiTool = cornerstoneTools.FreehandRoiTool;
 
-
-
-  
-
   public get windowingValue(): string {
     if (this.isCornerstoneEnabled) {
       let viewport = cornerstone.getViewport(this.element);
@@ -137,8 +133,13 @@ export class CornerstoneDirective implements OnInit, AfterViewChecked {
     this.resetViewer();
   }
 
+
+
+
+
   ngAfterViewChecked() {
   //  if (this.currentImage) cornerstone.resize(this.element, true);
+
   }
 
   //
@@ -254,11 +255,11 @@ export class CornerstoneDirective implements OnInit, AfterViewChecked {
     // Add the stack tool state to the enabled element
     cornerstoneTools.addStackStateManager(this.element, ['stack']);
     cornerstoneTools.addToolState(this.element, 'stack', stack);
-    // cornerstoneTools.stackScrollWheel.activate(this.element);
+    cornerstoneTools.stackScrollWheel.activate(this.element);
     // Enable all tools we want to use with this element
-    cornerstoneTools.setToolActiveForElement(this.element, 'StackScroll', {});
+    // cornerstoneTools.setToolActiveForElement(this.element, 'StackScrollMouseWheelTool', {});
     //cornerstoneTools.stackPrefetch.enable(this.element);
-
+    cornerstoneTools.setToolActive(this.element,'StackScrollMouseWheel', { })
   }
 
 
@@ -278,7 +279,7 @@ export class CornerstoneDirective implements OnInit, AfterViewChecked {
     cornerstoneTools.setToolDisabledForElement(this.element, 'PanMultiTouch');
     cornerstoneTools.setToolDisabledForElement(this.element, 'StackScroll');
     cornerstoneTools.setToolDisabledForElement(this.element, 'StackScrollMouseWheel');
-    cornerstoneTools.setToolDisabledForElement(this.element, 'StackScrollMouseWheel');
+
     cornerstoneTools.setToolDisabledForElement(this.element,'RectangleScissors', )
     // cornerstoneTools.setToolDisabledForElement(this.element, 'HighlightTool');
 

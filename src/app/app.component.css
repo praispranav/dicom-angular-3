@@ -1,0 +1,8 @@
+.btn{
+    background: white;
+    color: black;
+}
+
+.btn:focus{
+    background: lightblue;
+}

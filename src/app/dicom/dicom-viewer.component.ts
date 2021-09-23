@@ -1,46 +1,84 @@
-import { Component, ViewChild, OnInit, Input, ViewChildren } from '@angular/core';
-import { CornerstoneDirective } from './cornerstone.directive';
-import { ThumbnailDirective } from './thumbnail.directive';
-
-
+import {
+  Component,
+  ViewChild,
+  OnInit,
+  Input,
+  ViewChildren,
+} from "@angular/core";
+import { CornerstoneDirective } from "./cornerstone.directive";
+import { ThumbnailDirective } from "./thumbnail.directive";
 
 declare const cornerstone;
 declare const cornerstoneTools;
 
 @Component({
-  selector: 'dicom-viewer',
-  templateUrl: './dicom-viewer.component.html',
-  styleUrls: ['./dicom-viewer.component.css']
+  selector: "dicom-viewer",
+  templateUrl: "./dicom-viewer.component.html",
+  styleUrls: ["./dicom-viewer.component.css"],
 })
 export class DICOMViewerComponent implements OnInit {
-
   @Input() public enableViewerTools = false; // enable viewer tools
   @Input() public enablePlayTools = false; // enable Play Clip tools
-  @Input() public downloadImagesURL = '' // download images URL
+  @Input() public downloadImagesURL = ""; // download images URL
   @Input() public maxImagesToLoad = 20; // limit for the automatic loading of study images
+
+  @Input("activeFrame") activeFrame: any;
+
+  probeStates: any
+
+  constructor() {
+    this.probeStates = null
+  }
+  // ngAfterViewInit() {
+    
+
+  // }
 
   public seriesList = []; // list of series on the images being displayed
   public currentSeriesIndex = 0;
   public currentSeries: any = {};
   public imageCount = 0; // total image count being viewed
-
+  isSeriesThumbnailVisible:boolean = true
   // control enable/disable image scroll buttons
-  public get hidePreviousImage(): any { return { color: (this.viewPort.currentIndex < 1) ? 'black' : 'white' }; }
-  public get hideNextImage(): any { return { color: (this.viewPort.currentIndex >= (this.imageCount - 1)) ? 'black' : 'white' }; }
+  public get hidePreviousImage(): any {
+    return { color: this.viewPort.currentIndex < 1 ? "black" : "white" };
+  }
+  public get hideNextImage(): any {
+    return {
+      color:
+        this.viewPort.currentIndex >= this.imageCount - 1 ? "black" : "white",
+    };
+  }
+  handleThumbnail(){
+    this.isSeriesThumbnailVisible = !this.isSeriesThumbnailVisible
+  }
 
   // control message for more images to load
   public get moreImagestoLoad(): string {
-    if (this.loadedImages.length < this.imageIdList.length && !this.loadingImages) { // are there any more images to load?
-      const imagesToLoad = (this.maxImagesToLoad <= 0) ? (this.imageIdList.length - this.loadedImages.length) : Math.min(this.maxImagesToLoad, this.imageIdList.length - this.loadedImages.length);
+    if (
+      this.loadedImages.length < this.imageIdList.length &&
+      !this.loadingImages
+    ) {
+      // are there any more images to load?
+      const imagesToLoad =
+        this.maxImagesToLoad <= 0
+          ? this.imageIdList.length - this.loadedImages.length
+          : Math.min(
+              this.maxImagesToLoad,
+              this.imageIdList.length - this.loadedImages.length
+            );
       return imagesToLoad.toString();
-    } else return '';
+    } else return "";
   }
 
   // control exhibition of a loading images progress indicator
   public loadingImages = false;
-  public get showProgress(): any { return { display: (this.loadingImages) ? 'inline-block' : 'none' } };
+  public get showProgress(): any {
+    return { display: this.loadingImages ? "inline-block" : "none" };
+  }
 
-  @ViewChild(CornerstoneDirective, { static: true }) viewPort: CornerstoneDirective; // the main cornertone view port
+  @ViewChild(CornerstoneDirective, { static: true })
+  viewPort: CornerstoneDirective; // the main cornertone view port
   @ViewChildren(ThumbnailDirective) thumbnails: Array<ThumbnailDirective>;
 
   private loadedImages = [];
@@ -48,10 +86,17 @@ export class DICOMViewerComponent implements OnInit {
   private element: any;
   private targetImageCount = 0;
 
-  constructor() { }
+ 
 
   ngOnInit() {
     this.element = this.viewPort.element;
+    window.addEventListener("click", () =>
+      console.log(
+        cornerstoneTools.getToolState(this.element, "RectangleScissors", () =>
+          console.log("Hello")
+        )
+      )
+    );
   }
 
   /**
@@ -71,14 +116,18 @@ export class DICOMViewerComponent implements OnInit {
     //
     // loop thru all imageIds, load and cache them for exhibition (up the the maximum limit defined)
     //
-    const maxImages = (this.maxImagesToLoad <= 0) ? imageIdList.length : Math.min(this.maxImagesToLoad, imageIdList.length);
+    const maxImages =
+      this.maxImagesToLoad <= 0
+        ? imageIdList.length
+        : Math.min(this.maxImagesToLoad, imageIdList.length);
     this.loadingImages = true; // activate progress indicator
     this.targetImageCount = maxImages;
     for (let index = 0; index < maxImages; index++) {
       const imageId = imageIdList[index];
-      cornerstone.loadAndCacheImage(imageId).then(imageData => { this.imageLoaded(imageData) });
+      cornerstone.loadAndCacheImage(imageId).then((imageData) => {
+        this.imageLoaded(imageData);
+      });
     }
-
   }
 
   /**
@@ -89,19 +138,79 @@ export class DICOMViewerComponent implements OnInit {
     //
     // loop thru all imageIds, load and cache them for exhibition (up the the maximum limit defined)
     //
-    const maxImages = (this.maxImagesToLoad <= 0) ? (this.imageIdList.length - this.loadedImages.length) : Math.min(this.maxImagesToLoad, this.imageIdList.length - this.loadedImages.length);
+    const maxImages =
+      this.maxImagesToLoad <= 0
+        ? this.imageIdList.length - this.loadedImages.length
+        : Math.min(
+            this.maxImagesToLoad,
+            this.imageIdList.length - this.loadedImages.length
+          );
     this.loadingImages = true; // activate progress indicator
     this.targetImageCount += maxImages;
     let nextImageIndex = this.loadedImages.length;
     for (let index = 0; index < maxImages; index++) {
       const imageId = this.imageIdList[nextImageIndex++];
-      cornerstone.loadAndCacheImage(imageId)
-        .then(imageData => { this.imageLoaded(imageData) })
-        .catch(err => { this.targetImageCount--; });
+      cornerstone
+        .loadAndCacheImage(imageId)
+        .then((imageData) => {
+          this.imageLoaded(imageData);
+        })
+        .catch((err) => {
+          this.targetImageCount--;
+        });
     }
-
   }
 
+  getConsole() {
+    console.log(
+      "Frame No: ",
+      this.activeFrame,
+      "Length Tool Data: ",
+      cornerstoneTools.getToolState(this.element, "Length")
+    );
+    console.log(
+      "Frame No: ",
+      this.activeFrame,
+      "Probe Tool Data: ",
+      cornerstoneTools.getToolState(this.element, "Probe")
+    );
+    console.log(
+      "Frame No: ",
+      this.activeFrame,
+      "Angle Tool Data: ",
+      cornerstoneTools.getToolState(this.element, "Angle")
+    );
+    console.log(
+      "Frame No: ",
+      this.activeFrame,
+      "EllipticalRoi Tool Data: ",
+      cornerstoneTools.getToolState(this.element, "EllipticalRoi")
+    );
+    console.log(
+      "Frame No: ",
+      this.activeFrame,
+      "RectangleRoi Tool Data: ",
+      cornerstoneTools.getToolState(this.element, "RectangleRoi")
+    );
+    console.log(
+      "Frame No: ",
+      this.activeFrame,
+      "FreehandRoi Tool Data: ",
+      cornerstoneTools.getToolState(this.element, "FreehandRoi")
+    );
+    console.log(
+      "Frame No: ",
+      this.activeFrame,
+      "Pan Tool Data: ",
+      cornerstoneTools.getToolState(this.element, "Pan")
+    );
+    console.log(
+      "Frame No: ",
+      this.activeFrame,
+      "Wwwc Tool Data: ",
+      cornerstoneTools.getToolState(this.element, "Wwwc")
+    );
+  }
   /**
    *
    * @param imageData the dicom image data
@@ -110,16 +219,18 @@ export class DICOMViewerComponent implements OnInit {
     //console.log(imageData.imageId)
     // build list of series in all loadded images
     const series = {
-      studyID: imageData.data.string('x0020000d'),
-      seriesID: imageData.data.string('x0020000e'),
-      seriesNumber: imageData.data.intString('x00200011'),
-      studyDescription: imageData.data.string('x00081030'),
-      seriesDescription: imageData.data.string('x0008103e'),
+      studyID: imageData.data.string("x0020000d"),
+      seriesID: imageData.data.string("x0020000e"),
+      seriesNumber: imageData.data.intString("x00200011"),
+      studyDescription: imageData.data.string("x00081030"),
+      seriesDescription: imageData.data.string("x0008103e"),
       imageCount: 1,
-      imageList: [imageData]
-    }
+      imageList: [imageData],
+    };
     // if this is a new series, add it to the list
-    let seriesIndex = this.seriesList.findIndex(item => item.seriesID === series.seriesID);
+    let seriesIndex = this.seriesList.findIndex(
+      (item) => item.seriesID === series.seriesID
+    );
     if (seriesIndex < 0) {
       seriesIndex = this.seriesList.length;
       this.seriesList.push(series);
@@ -127,16 +238,18 @@ export class DICOMViewerComponent implements OnInit {
         if (a.seriesNumber > b.seriesNumber) return 1;
         if (a.seriesNumber < b.seriesNumber) return -1;
         return 0;
-      })
+      });
     } else {
       let seriesItem = this.seriesList[seriesIndex];
       seriesItem.imageCount++;
       seriesItem.imageList.push(imageData);
       seriesItem.imageList.sort((a, b) => {
-        if (a.data.intString('x00200013') > b.data.intString('x00200013')) return 1;
-        if (a.data.intString('x00200013') < b.data.intString('x00200013')) return -1;
+        if (a.data.intString("x00200013") > b.data.intString("x00200013"))
+          return 1;
+        if (a.data.intString("x00200013") < b.data.intString("x00200013"))
+          return -1;
         return 0;
-      })
+      });
     }
 
     this.loadedImages.push(imageData); // save to images loaded
@@ -145,13 +258,13 @@ export class DICOMViewerComponent implements OnInit {
       //this.currentSeries = this.seriesList[seriesIndex];
       //this.imageCount = this.currentSeries.imageCount; // get total image count
       //this.viewPort.addImageData(imageData);
-      this.showSeries(this.currentSeriesIndex)
+      this.showSeries(this.currentSeriesIndex);
     }
 
-    if (this.loadedImages.length >= this.targetImageCount) { // did we finish loading images?
+    if (this.loadedImages.length >= this.targetImageCount) {
+      // did we finish loading images?
       this.loadingImages = false; // deactivate progress indicator
     }
-
   }
 
   public showSeries(index) {
@@ -169,7 +282,7 @@ export class DICOMViewerComponent implements OnInit {
   }
 
   public saveAs() {
-    cornerstoneTools.saveAs(this.element, "teste.jpg")
+    cornerstoneTools.saveAs(this.element, "teste.jpg");
   }
 
   /**
@@ -194,7 +307,7 @@ export class DICOMViewerComponent implements OnInit {
   // deactivate all tools
   public resetAllTools() {
     if (this.imageCount > 0) {
-      this.viewPort.resetAllTools()
+      this.viewPort.resetAllTools();
       this.stopClip();
     }
   }
@@ -205,8 +318,26 @@ export class DICOMViewerComponent implements OnInit {
       this.resetAllTools();
       // cornerstoneTools.wwwc.activate(this.element, 1);
       // cornerstoneTools.wwwcTouchDrag.activate(this.element);
-      cornerstoneTools.setToolActiveForElement(this.element, 'Wwwc', { mouseButtonMask: 1 }, ['Mouse']);
+      cornerstoneTools.setToolActiveForElement(
+        this.element,
+        "Wwwc",
+        { mouseButtonMask: 1 },
+        ["Mouse"]
+      );
+    }
+  }
 
+  public enableStackScroll() {
+    if (this.imageCount > 0) {
+      this.resetAllTools();
+      // cornerstoneTools.wwwc.activate(this.element, 1);
+      // cornerstoneTools.wwwcTouchDrag.activate(this.element);
+      cornerstoneTools.setToolActiveForElement(
+        this.element,
+        "StackScrollMouseWheel",
+        { mouseButtonMask: 1 },
+        ["Mouse"]
+      );
     }
   }
 
@@ -216,10 +347,19 @@ export class DICOMViewerComponent implements OnInit {
       this.resetAllTools();
       // cornerstoneTools.zoom.activate(this.element, 5); // 5 is right mouse button and left mouse button
       // cornerstoneTools.zoomTouchDrag.activate(this.element);
-      cornerstoneTools.setToolActiveForElement(this.element, 'Zoom', { mouseButtonMask: 1 }, ['Mouse']); // zoom left mouse
+      cornerstoneTools.setToolActiveForElement(
+        this.element,
+        "Zoom",
+        { mouseButtonMask: 1 },
+        ["Mouse"]
+      ); // zoom left mouse
       // cornerstoneTools.setToolActiveForElement(this.element, 'ZoomTouchPinch', { }, ['Mouse']);
-      cornerstoneTools.setToolActiveForElement(this.element, 'Pan', { mouseButtonMask: 2 }, ['Mouse']); // pan right mouse
-
+      cornerstoneTools.setToolActiveForElement(
+        this.element,
+        "Pan",
+        { mouseButtonMask: 2 },
+        ["Mouse"]
+      ); // pan right mouse
     }
   }
 
@@ -229,7 +369,12 @@ export class DICOMViewerComponent implements OnInit {
       this.resetAllTools();
       // cornerstoneTools.pan.activate(this.element, 3); // 3 is middle mouse button and left mouse button
       // cornerstoneTools.panTouchDrag.activate(this.element);
-      cornerstoneTools.setToolActiveForElement(this.element, 'Pan', { mouseButtonMask: 1 }, ['Mouse']);
+      cornerstoneTools.setToolActiveForElement(
+        this.element,
+        "Pan",
+        { mouseButtonMask: 1 },
+        ["Mouse"]
+      );
     }
   }
 
@@ -240,7 +385,12 @@ export class DICOMViewerComponent implements OnInit {
       // cornerstoneTools.stackScroll.activate(this.element, 1);
       // cornerstoneTools.stackScrollTouchDrag.activate(this.element);
       // cornerstoneTools.stackScrollKeyboard.activate(this.element);
-      cornerstoneTools.setToolActiveForElement(this.element, 'StackScroll', { mouseButtonMask: 1 }, ['Mouse']);
+      cornerstoneTools.setToolActiveForElement(
+        this.element,
+        "StackScroll",
+        { mouseButtonMask: 1 },
+        ["Mouse"]
+      );
     }
   }
 
@@ -249,28 +399,41 @@ export class DICOMViewerComponent implements OnInit {
     if (this.imageCount > 0) {
       this.resetAllTools();
       // cornerstoneTools.length.activate(this.element, 1);
-      cornerstoneTools.setToolActiveForElement(this.element, 'Length', { mouseButtonMask: 1 }, ['Mouse']);
+      cornerstoneTools.setToolActiveForElement(
+        this.element,
+        "Length",
+        { mouseButtonMask: 1 },
+        ["Mouse"]
+      );
     }
   }
-
 
   // High
   public enableHighlight() {
     if (this.imageCount > 0) {
       this.resetAllTools();
       // cornerstoneTools.length.activate(this.element, 1);
-      cornerstoneTools.setToolActiveForElement(this.element, 'RectangleScissors', { mouseButtonMask: 1 }, ['Mouse']);
+      cornerstoneTools.setToolActiveForElement(
+        this.element,
+        "RectangleScissors",
+        { mouseButtonMask: 1 },
+        ["Mouse"]
+      );
     }
-      // Active.
+    // Active.
   }
-
 
   // activate angle measurement
   public enableAngle() {
     if (this.imageCount > 0) {
       this.resetAllTools();
       // cornerstoneTools.simpleAngle.activate(this.element, 1);
-      cornerstoneTools.setToolActiveForElement(this.element, 'Angle', { mouseButtonMask: 1 }, ['Mouse']);
+      cornerstoneTools.setToolActiveForElement(
+        this.element,
+        "Angle",
+        { mouseButtonMask: 1 },
+        ["Mouse"]
+      );
     }
   }
 
@@ -279,14 +442,24 @@ export class DICOMViewerComponent implements OnInit {
     if (this.imageCount > 0) {
       this.resetAllTools();
       // cornerstoneTools.probe.activate(this.element, 1);
-      cornerstoneTools.setToolActiveForElement(this.element, 'Probe', { mouseButtonMask: 1 }, ['Mouse']);
+      cornerstoneTools.setToolActiveForElement(
+        this.element,
+        "Probe",
+        { mouseButtonMask: 1 },
+        ["Mouse"]
+      );
     }
   }
   public enableFreeHand() {
     if (this.imageCount > 0) {
       this.resetAllTools();
       // cornerstoneTools.probe.activate(this.element, 1);
-      cornerstoneTools.setToolActiveForElement(this.element, 'FreehandRoi', { mouseButtonMask: 1 }, ['Mouse']);
+      cornerstoneTools.setToolActiveForElement(
+        this.element,
+        "FreehandRoi",
+        { mouseButtonMask: 1 },
+        ["Mouse"]
+      );
     }
   }
 
@@ -295,7 +468,12 @@ export class DICOMViewerComponent implements OnInit {
     if (this.imageCount > 0) {
       this.resetAllTools();
       // cornerstoneTools.ellipticalRoi.activate(this.element, 1);
-      cornerstoneTools.setToolActiveForElement(this.element, 'EllipticalRoi', { mouseButtonMask: 1 }, ['Mouse']);
+      cornerstoneTools.setToolActiveForElement(
+        this.element,
+        "EllipticalRoi",
+        { mouseButtonMask: 1 },
+        ["Mouse"]
+      );
     }
   }
 
@@ -304,7 +482,12 @@ export class DICOMViewerComponent implements OnInit {
     if (this.imageCount > 0) {
       this.resetAllTools();
       // cornerstoneTools.rectangleRoi.activate(this.element, 1);
-      cornerstoneTools.setToolActiveForElement(this.element, 'RectangleRoi', { mouseButtonMask: 1 }, ['Mouse']);
+      cornerstoneTools.setToolActiveForElement(
+        this.element,
+        "RectangleRoi",
+        { mouseButtonMask: 1 },
+        ["Mouse"]
+      );
     }
   }
 
@@ -312,7 +495,7 @@ export class DICOMViewerComponent implements OnInit {
   public playClip() {
     if (this.imageCount > 0) {
       let frameRate = 10;
-      let stackState = cornerstoneTools.getToolState(this.element, 'stack');
+      let stackState = cornerstoneTools.getToolState(this.element, "stack");
       if (stackState) {
         frameRate = stackState.data[0].frameRate;
         // Play at a default 10 FPS if the framerate is not specified
@@ -346,7 +529,9 @@ export class DICOMViewerComponent implements OnInit {
   // reset image
   public resetImage() {
     if (this.imageCount > 0) {
-      let toolStateManager = cornerstoneTools.getElementToolStateManager(this.element);
+      let toolStateManager = cornerstoneTools.getElementToolStateManager(
+        this.element
+      );
       // Note that this only works on ImageId-specific tool state managers (for now)
       //toolStateManager.clear(this.element);
       cornerstoneTools.clearToolState(this.element, "Length");
@@ -367,6 +552,5 @@ export class DICOMViewerComponent implements OnInit {
     this.currentSeriesIndex = 0;
     this.currentSeries = {};
     this.imageCount = 0; // total image count being viewed
-
   }
 }
