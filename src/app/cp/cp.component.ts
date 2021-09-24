@@ -23,6 +23,8 @@ export class CpComponent implements OnInit {
 
   @ViewChild(DICOMViewerComponent) toolActivator:DICOMViewerComponent
 
+  frame:number = 1
+
   handleToolViewer(){
     if(this.activeFrame === 1) return true
   }

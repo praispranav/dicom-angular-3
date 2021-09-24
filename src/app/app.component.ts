@@ -39,24 +39,102 @@ export class AppComponent implements OnInit {
   seriesList:any
   historyVisibility:boolean
 
+  frame1States:any;
+  frame2States:any;
+  frame3States:any;
+  frame4States:any;
+  frame5States:any;
+  frame6States:any;
+  frame7States:any;
+  frame8States:any;
+  initialToolState:any;
+
+  fullScreen:any;
+
+  
+
   constructor(){
     this.dicomImageParent = undefined;
     this.activeFrame = 1
     this.activeFrameNumber = 1
     this.style = "border: 1px solid red;"
     this.arr[this.activeFrameNumber] = this.style
-    this.historyVisibility = true
+    this.historyVisibility = false;
+    this.initialToolState = {
+      Probe:[],
+      Length:[],
+      Angle:[],
+      EllipticalRoi:[],
+      RectangleRoi:[],
+      FreehandRoi:[],
+    }
+    this.frame1States  = this.initialToolState
+    this.frame2States  = this.initialToolState
+    this.frame3States  = this.initialToolState
+    this.frame4States  = this.initialToolState
+    this.frame5States  = this.initialToolState
+    this.frame6States  = this.initialToolState
+    this.frame7States  = this.initialToolState
+    this.frame8States  = this.initialToolState
+    this.fullScreen = null
   }
   ngOnInit() {
-
   }
 
   getFrameProbe(componentAccessor:any){
     return this[componentAccessor].toolActivator.probeStates
   }
+  
+  handleFullScreenChange(frameNo:number){
+    this.fullScreen = frameNo
+  }
+  closeFullScreen(){
+    this.fullScreen = null
+  }
+
+  tools:any = [
+    'Probe',
+    'Length',
+    'Angle',
+    'EllipticalRoi',
+    'RectangleRoi',
+    'FreehandRoi',
+  ]
 
   handleHistoryVisibility(){
     this.historyVisibility = !this.historyVisibility
+    this.frame1States = new Object()
+    for (let x= 0; x< this.tools.length; x++)[ 
+      this.frame1States[this.tools[x]] = this.child.toolActivator.allToolState(this.tools[x])? this.child.toolActivator.allToolState(this.tools[x]).data : []
+    ]
+    this.frame2States = new Object()
+    for (let x= 0; x< this.tools.length; x++)[ 
+      this.frame2States[this.tools[x]] = this.child2.toolActivator.allToolState(this.tools[x])? this.child2.toolActivator.allToolState(this.tools[x]).data : []
+    ]
+    this.frame3States = new Object()
+    for (let x= 0; x< this.tools.length; x++)[ 
+      this.frame3States[this.tools[x]] = this.child3.toolActivator.allToolState(this.tools[x])? this.child3.toolActivator.allToolState(this.tools[x]).data : []
+    ]
+    this.frame4States = new Object()
+    for (let x= 0; x< this.tools.length; x++)[ 
+      this.frame4States[this.tools[x]] = this.child4.toolActivator.allToolState(this.tools[x])? this.child4.toolActivator.allToolState(this.tools[x]).data : []
+    ]
+    this.frame5States = new Object()
+    for (let x= 0; x< this.tools.length; x++)[ 
+      this.frame5States[this.tools[x]] = this.child5.toolActivator.allToolState(this.tools[x])? this.child5.toolActivator.allToolState(this.tools[x]).data : []
+    ]
+    this.frame6States = new Object()
+    for (let x= 0; x< this.tools.length; x++)[ 
+      this.frame6States[this.tools[x]] = this.child6.toolActivator.allToolState(this.tools[x])? this.child6.toolActivator.allToolState(this.tools[x]).data : []
+    ]
+    this.frame7States = new Object()
+    for (let x= 0; x< this.tools.length; x++)[ 
+      this.frame7States[this.tools[x]] = this.child7.toolActivator.allToolState(this.tools[x])? this.child7.toolActivator.allToolState(this.tools[x]).data : []
+    ]
+    this.frame8States = new Object()
+    for (let x= 0; x< this.tools.length; x++)[ 
+      this.frame8States[this.tools[x]] = this.child8.toolActivator.allToolState(this.tools[x])? this.child8.toolActivator.allToolState(this.tools[x]).data : []
+    ]
   }
 
   frame1WidthHeight(){

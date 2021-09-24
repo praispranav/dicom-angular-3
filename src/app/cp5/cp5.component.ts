@@ -24,7 +24,7 @@ export class Cp5Component implements OnInit {
 
   @ViewChild(DICOMViewerComponent) toolActivator:DICOMViewerComponent
 
-
+frame:number = 5
   handleToolViewer(){
     if(this.activeFrame === 5) return true
   }

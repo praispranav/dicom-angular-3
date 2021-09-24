@@ -22,6 +22,7 @@ export class Cp2Component implements OnInit {
 
   @ViewChild(DICOMViewerComponent) toolActivator:DICOMViewerComponent
 
+  frame:number = 2
 
   handleToolViewer(){
     if(this.activeFrame === 2) return true

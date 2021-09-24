@@ -6,3 +6,10 @@
 .btn:focus{
     background: lightblue;
 }
+li{
+    color: rgb(6, 220, 6);
+}
+
+li:hover{
+    color: white;
+}

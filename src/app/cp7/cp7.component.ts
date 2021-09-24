@@ -21,7 +21,7 @@ export class Cp7Component implements OnInit {
   @Input('activeFrame') activeFrame :any
 
   @ViewChild(DICOMViewerComponent) toolActivator:DICOMViewerComponent
-
+frame:number = 7
 
   handleToolViewer(){
     if(this.activeFrame === 7) return true

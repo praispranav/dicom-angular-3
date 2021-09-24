@@ -24,6 +24,7 @@ export class Cp4Component implements OnInit {
 
   @ViewChild(DICOMViewerComponent) toolActivator:DICOMViewerComponent
 
+frame:number = 4
 
   handleToolViewer(){
     if(this.activeFrame === 4) return true

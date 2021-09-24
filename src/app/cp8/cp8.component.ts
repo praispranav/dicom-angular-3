@@ -23,6 +23,8 @@ export class Cp8Component implements OnInit {
 
   @ViewChild(DICOMViewerComponent) toolActivator:DICOMViewerComponent
 
+  frame:number  = 8
+
   handleToolViewer(){
     if(this.activeFrame === 8) return true
   }

@@ -23,6 +23,7 @@ export class Cp3Component implements OnInit {
 
   @ViewChild(DICOMViewerComponent) toolActivator:DICOMViewerComponent
 
+  frame:number = 3
 
   handleToolViewer(){
     if(this.activeFrame === 3) return true

@@ -23,6 +23,7 @@ export class DICOMViewerComponent implements OnInit {
   @Input() public maxImagesToLoad = 20; // limit for the automatic loading of study images
 
   @Input("activeFrame") activeFrame: any;
+  @Input('frame') frameNo:number
 
   probeStates: any
 
@@ -97,6 +98,20 @@ export class DICOMViewerComponent implements OnInit {
         )
       )
     );
+    console.log("Frame Numbers", this.frameNo)
+  }
+
+  allToolState(toolName:string){
+    // const obj = {
+    //   probe: cornerstoneTools.getToolState(this.element, "Probe"),
+    //   length : cornerstoneTools.getToolState(this.element, "Length"),
+    //   angle: cornerstoneTools.getToolState(this.element, "Angle"),
+    //   elliptical: cornerstoneTools.getToolState(this.element, "EllipticalRoi"),
+    //   rectangle: cornerstoneTools.getToolState(this.element, "RectangleRoi"),
+    //   freehand: cornerstoneTools.getToolState(this.element, "FreehandRoi"),
+    //   whiteBalance: cornerstoneTools.getToolState(this.element, "Wwwc"),
+    // }
+    return cornerstoneTools.getToolState(this.element,toolName)
   }
 
   /**

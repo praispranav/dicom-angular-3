@@ -212,6 +212,7 @@
     </div>
   </div>
   
+  <!-- <P></P> -->
     
   <div class="d-flex"
       style="background: black; color: #ffffff; height: 100vh; width:100%; overflow-y: scroll"
@@ -226,8 +227,11 @@
           "
           (mouseover)="selectFrame(1)"
           class="w-25 h-50"
-          [ngClass]="frame1WidthHeight()"
+          [ngClass]="fullScreen === 1 ? 'w-100 h-100' :frame1WidthHeight()"
         >
+          <button *ngIf="fullScreen === null " class="btn btn-small position-absolute btn-primary" style="z-index: 10000000;" (click)="handleFullScreenChange(1)">Full Screen</button>
+          <button *ngIf="fullScreen !== null" class="btn btn-small position-absolute btn-primary" style="z-index: 10000000;" (click)="closeFullScreen()">Close</button>
+          <!-- <button *ngIf="fullScreen !== null" class="btn btn-small position-absolute btn-primary" (click)="closeFullScreen(1)">Close</button> -->
           <app-cp
             [activeFrame]="findIndexFrame()"
             [dicomImageParent]="dicomImageParent"
@@ -354,35 +358,432 @@
           ></app-cp8>
         </div>
       </div>
-      <div *ngIf="historyVisibility" style="width: 20vw; height: 100%;background: rgb(90,50,50)">
+      <div *ngIf="historyVisibility" style="width: 20vw; height: 90vh; overflow-y:scroll;background: rgb(90,50,50)">
         <div class="my-2">
           <b style="color: white;">Frame 1 History</b>
           <br />
           <div class="my-1">
-            <p>Probe</p>
-            <!-- <ol *ngIf="getFrameProbe('child')">
-              <li  *ngFor="let item of getFrameProbe()">
-                {{ item | json }}
-              </li>
-            </ol> -->
+            Probe
+           <ol>
+             <li *ngFor="let item of frame1States.Probe">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Length
+           <ol>
+             <li *ngFor="let item of frame1States.Length">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Angle
+           <ol>
+             <li *ngFor="let item of frame1States.Angle">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Elliptical
+           <ol>
+             <li *ngFor="let item of frame1States.EllipticalRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            RectangleRoi
+           <ol>
+             <li *ngFor="let item of frame1States.RectangleRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            FreehandRoi
+           <ol>
+             <li *ngFor="let item of frame1States.FreehandRoi">
+               {{ item | json }}
+             </li>
+           </ol>
           </div>
 
         </div>
+        <div>
+          <b style="color: white;">Frame 2 History</b>
+          <br />
+          <div class="my-1">
+            Probe
+           <ol>
+             <li *ngFor="let item of frame2States.Probe">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Length
+           <ol>
+             <li *ngFor="let item of frame2States.Length">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Angle
+           <ol>
+             <li *ngFor="let item of frame2States.Angle">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Elliptical
+           <ol>
+             <li *ngFor="let item of frame2States.EllipticalRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            RectangleRoi
+           <ol>
+             <li *ngFor="let item of frame2States.RectangleRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            FreehandRoi
+           <ol>
+             <li *ngFor="let item of frame2States.FreehandRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+        </div>
+        <br />
+        <div class="">
+          <b style="color: white;">Frame 3 History</b>
+          <br />
+          <div class="my-1">
+            Probe
+           <ol>
+             <li *ngFor="let item of frame3States.Probe">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Length
+           <ol>
+             <li *ngFor="let item of frame3States.Length">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Angle
+           <ol>
+             <li *ngFor="let item of frame3States.Angle">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Elliptical
+           <ol>
+             <li *ngFor="let item of frame3States.EllipticalRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            RectangleRoi
+           <ol>
+             <li *ngFor="let item of frame3States.RectangleRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            FreehandRoi
+           <ol>
+             <li *ngFor="let item of frame3States.FreehandRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+        </div>
+        <br />
+        <div class="">
+          <b style="color: white;">Frame 4 History</b>
+          <br />
+          <br />
+          <div class="my-1">
+            Probe
+           <ol>
+             <li *ngFor="let item of frame4States.Probe">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Length
+           <ol>
+             <li *ngFor="let item of frame4States.Length">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Angle
+           <ol>
+             <li *ngFor="let item of frame4States.Angle">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Elliptical
+           <ol>
+             <li *ngFor="let item of frame4States.EllipticalRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            RectangleRoi
+           <ol>
+             <li *ngFor="let item of frame4States.RectangleRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            FreehandRoi
+           <ol>
+             <li *ngFor="let item of frame4States.FreehandRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+        </div>
 
-        <b style="color: white;">Frame 2 History</b>
-        <br />
-        <b style="color: white;">Frame 3 History</b>
-        <br />
-        <b style="color: white;">Frame 4 History</b>
-        <br />
-        <b style="color: white;">Frame 5 History</b>
-        <br />
-        <b style="color: white;">Frame 6 History</b>
-        <br />
-        
-        <b style="color: white;">Frame 7 History</b>
-        <br />
-        <b style="color: white;">Frame 8 History</b>
+        <div class="">
+          <br />
+          <b style="color: white;">Frame 5 History</b>
+          <br />
+          <div class="my-1">
+            Probe
+           <ol>
+             <li *ngFor="let item of frame5States.Probe">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Length
+           <ol>
+             <li *ngFor="let item of frame5States.Length">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Angle
+           <ol>
+             <li *ngFor="let item of frame5States.Angle">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Elliptical
+           <ol>
+             <li *ngFor="let item of frame5States.EllipticalRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            RectangleRoi
+           <ol>
+             <li *ngFor="let item of frame5States.RectangleRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            FreehandRoi
+           <ol>
+             <li *ngFor="let item of frame5States.FreehandRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+        </div>
+        <div class="">
+          <br />
+          <b style="color: white;">Frame 6 History</b>
+          <br />
+          <div class="my-1">
+            Probe
+           <ol>
+             <li *ngFor="let item of frame6States.Probe">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Length
+           <ol>
+             <li *ngFor="let item of frame6States.Length">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Angle
+           <ol>
+             <li *ngFor="let item of frame6States.Angle">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Elliptical
+           <ol>
+             <li *ngFor="let item of frame6States.EllipticalRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            RectangleRoi
+           <ol>
+             <li *ngFor="let item of frame6States.RectangleRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            FreehandRoi
+           <ol>
+             <li *ngFor="let item of frame6States.FreehandRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+        </div>
+        <div>
+          <br />
+          <b style="color: white;">Frame 7 History</b>
+          <br />
+          <div class="my-1">
+            Probe
+           <ol>
+             <li *ngFor="let item of frame7States.Probe">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Length
+           <ol>
+             <li *ngFor="let item of frame7States.Length">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Angle
+           <ol>
+             <li *ngFor="let item of frame7States.Angle">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Elliptical
+           <ol>
+             <li *ngFor="let item of frame7States.EllipticalRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            RectangleRoi
+           <ol>
+             <li *ngFor="let item of frame7States.RectangleRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            FreehandRoi
+           <ol>
+             <li *ngFor="let item of frame7States.FreehandRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+        </div>
+        <div class="">
+          <br />
+          <b style="color: white;">Frame 8 History</b>
+          <br />
+          <div class="my-1">
+            Probe
+           <ol>
+             <li *ngFor="let item of frame8States.Probe">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Length
+           <ol>
+             <li *ngFor="let item of frame8States.Length">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Angle
+           <ol>
+             <li *ngFor="let item of frame8States.Angle">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            Elliptical
+           <ol>
+             <li *ngFor="let item of frame8States.EllipticalRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            RectangleRoi
+           <ol>
+             <li *ngFor="let item of frame8States.RectangleRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+          <div class="my-1">
+            FreehandRoi
+           <ol>
+             <li *ngFor="let item of frame8States.FreehandRoi">
+               {{ item | json }}
+             </li>
+           </ol>
+          </div>
+        </div>
       </div>
     </div>
  

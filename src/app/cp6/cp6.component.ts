@@ -22,7 +22,7 @@ export class Cp6Component implements OnInit {
   @Input('activeFrame') activeFrame :any
 
   @ViewChild(DICOMViewerComponent) toolActivator:DICOMViewerComponent
-
+frame:number = 6
 
   handleToolViewer(){
     if(this.activeFrame === 6) return true
