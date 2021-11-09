@@ -229,31 +229,39 @@
           class="w-25 h-50"
           [ngClass]="fullScreen === 1 ? 'w-100 h-100' :frame1WidthHeight()"
         >
-          <button *ngIf="fullScreen === null " class="btn btn-small position-absolute btn-primary" style="z-index: 10000000;" (click)="handleFullScreenChange(1)">Full Screen</button>
-          <button *ngIf="fullScreen !== null" class="btn btn-small position-absolute btn-primary" style="z-index: 10000000;" (click)="closeFullScreen()">Close</button>
+        <div class="w-100 h-100 position-relative">
+
+          <button *ngIf="fullScreen === null " class="btn btn-small position-absolute btn-primary" style="z-index: 10000000; right: 0;" (click)="handleFullScreenChange(1)">Full Screen</button>
+          <button *ngIf="fullScreen !== null" class="btn btn-small position-absolute btn-primary" style="z-index: 10000000; right: 0;" (click)="closeFullScreen()">Close</button>
           <!-- <button *ngIf="fullScreen !== null" class="btn btn-small position-absolute btn-primary" (click)="closeFullScreen(1)">Close</button> -->
           <app-cp
-            [activeFrame]="findIndexFrame()"
-            [dicomImageParent]="dicomImageParent"
-            [parentData]="parentData"
+          [activeFrame]="findIndexFrame()"
+          [dicomImageParent]="dicomImageParent"
+          [parentData]="parentData"
           ></app-cp>
         </div>
+        </div>
+        
         <div
-          *ngIf="activeFrame >= 2"
-          [ngStyle]="
-            arr[2]
-              ? { border: '2px solid #1565c0' }
-              : { border: '2px solid #90caf9' }
-          "
-          (mouseover)="selectFrame(2)"
-          class="w-25 h-50"
-          [ngClass]="frame2WidthHeight()"
+        *ngIf="activeFrame >= 2"
+        [ngStyle]="
+        arr[2]
+        ? { border: '2px solid #1565c0' }
+        : { border: '2px solid #90caf9' }
+        "
+        (mouseover)="selectFrame(2)"
+        class="w-25 h-50"
+        [ngClass]="fullScreen === 2? 'w-100 h-100': frame2WidthHeight()"
         >
+        <div class="w-100 h-100 position-relative">
+          <button *ngIf="fullScreen === null " class="btn btn-small position-absolute btn-primary" style="z-index: 10000000; right: 0;" (click)="handleFullScreenChange(2)">Full Screen</button>
+          <button *ngIf="fullScreen !== null" class="btn btn-small position-absolute btn-primary" style="z-index: 10000000; right: 0;" (click)="closeFullScreen()">Close</button>
           <app-cp2
-            [activeFrame]="findIndexFrame()"
-            [dicomImageParent]="dicomImageParent"
-            [parentData]="parentData"
+          [activeFrame]="findIndexFrame()"
+          [dicomImageParent]="dicomImageParent"
+          [parentData]="parentData"
           ></app-cp2>
+        </div>
         </div>
         <div
           *ngIf="activeFrame >= 3"
